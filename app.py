@@ -1,10 +1,35 @@
 import os
 from flask import Flask, render_template
 from flask import request, redirect
+import time, json
 
 app=Flask(__name__, static_url_path='', static_folder='static', template_folder='templates')
 
-app.config["UPLOADS"] = "/home/toan/Desktop/Nhom3_VTDT-main/static/savefile"
+app.config["UPLOADS"] = "./static/savefile/"
+
+books = '''{
+	"connection status":false,
+	"ip":[
+		"192.168.1.16",
+		"192.168.1.12",
+		"192.168.1.17",
+		"192.168.1.13",
+        "192.168.1.16",
+		"192.168.1.12",
+		"192.168.1.17",
+		"192.168.1.13"
+	],
+	"status":[
+		"SUCCESS",
+		"UNREACHABLE",
+		"SUCCESS",
+		"UNREACHABLE",
+        "SUCCESS",
+		"UNREACHABLE",
+		"SUCCESS",
+		"UNREACHABLE"
+	]
+}'''
 
 @app.route('/')
 def home():
@@ -18,13 +43,10 @@ def upload():
             file = request.files["file"]
             file.save(os.path.join(app.config["UPLOADS"], file.filename))
             print("File saved")
-            return redirect(request.url)
-        if request.form.get('action') == 'start Deploy':
-            check1 = os.path.isfile('/home/toan/Desktop/Nhom3_VTDT-main/static/savefile/inventory')
-            if check1==True:
-                os.system("ansible-playbook -i /home/toan/Desktop/Nhom3_VTDT-main/static/savefile/inventory /home/toan/Desktop/Nhom3_VTDT-main/static/savefile/playbook.yaml > /home/toan/Desktop/gg.txt")
-                
-    return render_template("upload.html")
+            # time.sleep(5)
+            return json.loads(books)
+    else:         
+        return render_template("upload.html")
 
 @app.route("/about")
 def about():
